@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
     xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans 
     https://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/security 
-    http://www.springframework.org/schema/security/spring-security.xsd">
+    http://www.springframework.org/schema/security/spring-security.xsd
+    http://www.springframework.org/schema/context 
+    https://www.springframework.org/schema/context/spring-context.xsd">
+    
 	
 	<!-- 
 	* http: 필터를 적용할 실질적 경로 설정
@@ -37,7 +41,7 @@
 		username-parameter="user_id"
 		password-parameter="user_pw"
 		default-target-url="/"
-		authentication-failure-url="/loginPage"
+		authentication-failure-url="/errorPage"
 	/>
 	
 	<!-- 
@@ -50,10 +54,24 @@
 	<logout
 	logout-url="/logout"
 	logout-success-url="/"
-	delete-cookies="JESSIONID"/>
+	delete-cookies="JESSIONID, remember-me"/>
+
+	<!--
+	  token-validity-seconds : 쿠키 지속 시간
+	  -->
+
+	<remember-me
+		token-validity-seconds="604800"
+		data-source-ref="dataSource"/> <!-- 7일 -->
 	
 	
 	</http>
+	
+	
+	<!-- Spring Security에서 비밀번호 암호화의 로직을 담당하는 Bean 등록 -->
+	<beans:bean id="bcryptPassword" 
+	class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+		
 	
 	
 	<!--
@@ -62,20 +80,37 @@
 		 user-service : UserDetails 정보를 설정할 수 있음.
 		 	password 앞에 {noop} 사용 -> 암호화 없이 시큐리티 동작 확인 가능
 	-->
+	
+	<context:annotation-config/>
+	 <context:component-scan base-package="com.gn.spring"/>
+	 
+	 
+	
+	
 	<authentication-manager>
+		<authentication-provider user-service-ref="loginService">
+			<password-encoder ref="bcryptPassword"/>
+		</authentication-provider>
+	</authentication-manager>
+	
+	
+	<!-- <authentication-manager>
 		<authentication-provider>
 			<user-service>
 				<user name="admin" password="{noop}admin" authorities="ROLE_ADMIN"/>
 				<user name="user" password="{noop}user" authorities="ROLE_USER"/>
 			</user-service>
 		</authentication-provider>
-	</authentication-manager>
+	</authentication-manager> -->
 	
 	<beans:bean id="customHttpFirewall" 
 	class="org.springframework.security.web.firewall.StrictHttpFirewall">
 		<beans:property name="allowSemicolon" value="true"/>
 	</beans:bean>
 	<http-firewall ref="customHttpFirewall"/>
+	
+	
+	
 	
 	
 </beans:beans>

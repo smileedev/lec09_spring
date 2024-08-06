@@ -3,12 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket" 
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
 	https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans 
 		https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context 
-		https://www.springframework.org/schema/context/spring-context.xsd">
+		https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/websocket 
+		http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 	
 	<!-- @Controller가 명시된 클래스를 요청을 받을 수 있는 객체로 설정
 		 어노테이션 드리븐을 쓰지 않으면 요청 받는 클래스를 직접 bean 태그로 추가해야 함. -->
@@ -45,8 +48,15 @@
 	<resources location="file:///C:/board/upload/"
 	mapping="/boardUploadImg/**"/>
 	
-	
-	
+	<!-- websocket 클래스 빈으로 등록하기 -->
+	<beans:bean id="chatting"
+	class="com.gn.spring.websocket.model.service.ChattingServer"/>
+	<websocket:handlers>
+		<websocket:mapping handler="chatting" path="/chatting"/>
+		<websocket:handshake-interceptors>
+			<beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
+		</websocket:handshake-interceptors>
+	</websocket:handlers>
 	
 	
 	

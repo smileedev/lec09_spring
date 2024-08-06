@@ -2,7 +2,7 @@ package com.gn.spring.board.model.vo;
 
 import java.util.Date;
 
-import com.gn.common.Paging;
+import com.gn.spring.common.Paging;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

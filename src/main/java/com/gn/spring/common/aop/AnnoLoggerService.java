@@ -1,4 +1,4 @@
-package com.gn.common.aop;
+package com.gn.spring.common.aop;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

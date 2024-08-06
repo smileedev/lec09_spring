@@ -1,4 +1,4 @@
-package com.gn.common;
+package com.gn.spring.common;
 
 public class Paging {
 	// 전체 게시글 개수
